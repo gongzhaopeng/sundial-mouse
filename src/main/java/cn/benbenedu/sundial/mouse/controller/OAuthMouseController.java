@@ -15,8 +15,14 @@ import java.util.Map;
 @Slf4j
 public class OAuthMouseController {
 
-    @Autowired
     private OAuth2RestTemplate oAuth2RestTemplate;
+
+    @Autowired
+    public OAuthMouseController(
+            OAuth2RestTemplate oAuth2RestTemplate) {
+
+        this.oAuth2RestTemplate = oAuth2RestTemplate;
+    }
 
     @GetMapping("/hello")
     public String hello(OAuth2Authentication auth) {
