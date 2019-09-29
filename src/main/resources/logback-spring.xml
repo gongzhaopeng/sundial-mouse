@@ -32,7 +32,7 @@
                 <logLevel/>
                 <loggerName/>
                 <pattern>
-                    <pattern>{ "serviceName": "sundial-${springAppName}" }</pattern>
+                    <pattern>{ "service": "sundial-${springAppName}" }</pattern>
                 </pattern>
                 <threadName/>
                 <message/>
