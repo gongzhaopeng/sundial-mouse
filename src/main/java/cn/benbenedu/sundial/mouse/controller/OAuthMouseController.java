@@ -27,13 +27,27 @@ public class OAuthMouseController {
     @GetMapping("/hello")
     public String hello(OAuth2Authentication auth) {
 
+        log.info("Client ID: {}", auth.getOAuth2Request().getClientId());
+        log.info("Client Owner: {}", auth.getOAuth2Request().getExtensions().get("owner"));
+
+        log.info("User ID: {}", auth.getUserAuthentication().getPrincipal());
+        final var userDetails = (Map<String, ?>) auth.getUserAuthentication().getDetails();
+        log.info("User Type: {}", userDetails.get("type"));
+        log.info("User Name: {}", userDetails.get("name"));
+        log.info("User Nickname: {}", userDetails.get("nickname"));
+
         log.info("Assess Token: {}", oAuth2RestTemplate.getAccessToken());
 
-        final var userPrincipal = (Map) auth.getPrincipal();
-        log.info("User ID: {}", userPrincipal.get("id"));
-        log.info("User Name: {}", userPrincipal.get("name"));
-        log.info("User Nickname: {}", userPrincipal.get("nickname"));
+        final var mouseOAuthHelloResp = oAuth2RestTemplate.getForObject(
+                "http://mouse/genesis/oauth/waitress", String.class);
+        log.info("/mouse/genesis/oauth/waitress Resp: {}", mouseOAuthHelloResp);
 
         return "Hello, OAuth...";
+    }
+
+    @GetMapping("/waitress")
+    public String waitress() {
+
+        return "I am the pretty waitress!";
     }
 }
