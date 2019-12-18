@@ -1,5 +1,6 @@
 package cn.benbenedu.sundial.mouse.controller;
 
+import cn.benbenedu.sundial.mouse.service.AsyncInvoker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -16,16 +17,19 @@ import java.util.Map;
 public class OAuthMouseController {
 
     private OAuth2RestTemplate oAuth2RestTemplate;
+    private AsyncInvoker asyncInvoker;
 
     @Autowired
     public OAuthMouseController(
-            OAuth2RestTemplate oAuth2RestTemplate) {
+            OAuth2RestTemplate oAuth2RestTemplate,
+            AsyncInvoker asyncInvoker) {
 
         this.oAuth2RestTemplate = oAuth2RestTemplate;
+        this.asyncInvoker = asyncInvoker;
     }
 
     @GetMapping("/hello")
-    public String hello(OAuth2Authentication auth) {
+    public String hello(OAuth2Authentication auth) throws Exception {
 
         log.info("Client ID: {}", auth.getOAuth2Request().getClientId());
         log.info("Client Owner: {}", auth.getOAuth2Request().getExtensions().get("owner"));
@@ -38,9 +42,11 @@ public class OAuthMouseController {
 
         log.info("Assess Token: {}", oAuth2RestTemplate.getAccessToken());
 
-        final var mouseOAuthHelloResp = oAuth2RestTemplate.getForObject(
+        final var waitressResp = oAuth2RestTemplate.getForObject(
                 "http://mouse/genesis/oauth/waitress", String.class);
-        log.info("/mouse/genesis/oauth/waitress Resp: {}", mouseOAuthHelloResp);
+        log.info("/mouse/genesis/oauth/waitress Resp: {}", waitressResp);
+
+        asyncInvoker.invokeApiOauthWaitressAsync();
 
         return "Hello, OAuth...";
     }
@@ -49,5 +55,11 @@ public class OAuthMouseController {
     public String waitress() {
 
         return "I am the pretty waitress!";
+    }
+
+    @GetMapping("/waitress/async")
+    public String asyncWaitress() {
+
+        return "I am the async waitress!";
     }
 }

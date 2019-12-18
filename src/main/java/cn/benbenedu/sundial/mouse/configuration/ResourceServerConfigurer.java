@@ -1,7 +1,6 @@
 package cn.benbenedu.sundial.mouse.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -24,19 +23,22 @@ public class ResourceServerConfigurer
 
     private static final String RESOURCE_ID = "MOUSE_API";
 
+    private RestTemplate restTemplate;
     private RemoteTokenServices remoteTokenServices;
 
     @Autowired
     public ResourceServerConfigurer(
+            @RestTemplateConfiguration.Pure RestTemplate restTemplate,
             RemoteTokenServices remoteTokenServices) {
 
+        this.restTemplate = restTemplate;
         this.remoteTokenServices = remoteTokenServices;
     }
 
     @PostConstruct
     public void init() {
 
-        remoteTokenServices.setRestTemplate(restTemplate());
+        remoteTokenServices.setRestTemplate(restTemplate);
         remoteTokenServices.setAccessTokenConverter(accessTokenConverter());
     }
 
@@ -52,13 +54,6 @@ public class ResourceServerConfigurer
 
         http.authorizeRequests()
                 .anyRequest().authenticated();
-    }
-
-    @Bean
-    @LoadBalanced
-    public RestTemplate restTemplate() {
-
-        return new RestTemplate();
     }
 
     @Bean
