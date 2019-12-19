@@ -24,7 +24,7 @@ import java.util.List;
 @Configuration
 public class RestTemplateConfiguration {
 
-    private static final String CLIENT_INNER_SCOPE = "client:inner";
+    private static final String SERVICE_INNER_SCOPE = "service:inner";
 
     @Bean
     @Primary
@@ -56,7 +56,7 @@ public class RestTemplateConfiguration {
         resourceDetails.setClientSecret(
                 resourceServerProperties.getClientSecret());
         resourceDetails.setGrantType("client_credentials");
-        resourceDetails.setScope(List.of(CLIENT_INNER_SCOPE));
+        resourceDetails.setScope(List.of(SERVICE_INNER_SCOPE));
         resourceDetails.setAccessTokenUri(
                 oAuth2ProtectedResourceDetails.getAccessTokenUri());
 
