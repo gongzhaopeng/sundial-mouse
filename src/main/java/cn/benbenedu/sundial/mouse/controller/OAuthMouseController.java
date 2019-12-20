@@ -3,6 +3,7 @@ package cn.benbenedu.sundial.mouse.controller;
 import cn.benbenedu.sundial.mouse.service.AsyncInvoker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,8 @@ public class OAuthMouseController {
     }
 
     @GetMapping("/hello")
+//    @Secured("ROLE_Spitter")
+    @Secured("ROLE_God")
     public String hello(OAuth2Authentication auth) throws Exception {
 
         log.info("Client ID: {}", auth.getOAuth2Request().getClientId());
