@@ -1,8 +1,10 @@
 package cn.benbenedu.sundial.mouse.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
@@ -11,9 +13,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.*;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.Map;
 
 @Configuration
@@ -23,22 +27,19 @@ public class ResourceServerConfigurer
 
     private static final String RESOURCE_ID = "MOUSE_API";
 
-    private RestTemplate restTemplate;
     private RemoteTokenServices remoteTokenServices;
 
     @Autowired
     public ResourceServerConfigurer(
-            @RestTemplateConfiguration.Pure RestTemplate restTemplate,
             RemoteTokenServices remoteTokenServices) {
 
-        this.restTemplate = restTemplate;
         this.remoteTokenServices = remoteTokenServices;
     }
 
     @PostConstruct
     public void init() {
 
-        remoteTokenServices.setRestTemplate(restTemplate);
+        remoteTokenServices.setRestTemplate(restTemplateForRemoteTokenServices());
         remoteTokenServices.setAccessTokenConverter(accessTokenConverter());
     }
 
@@ -54,6 +55,25 @@ public class ResourceServerConfigurer
 
         http.authorizeRequests()
                 .anyRequest().authenticated();
+    }
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplateForRemoteTokenServices() {
+
+        final var restTemplate = new RestTemplate();
+
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+            @Override
+            // Ignore 400
+            public void handleError(ClientHttpResponse response) throws IOException {
+                if (response.getRawStatusCode() != 400) {
+                    super.handleError(response);
+                }
+            }
+        });
+
+        return restTemplate;
     }
 
     @Bean
