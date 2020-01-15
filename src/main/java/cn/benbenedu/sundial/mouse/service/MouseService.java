@@ -1,6 +1,6 @@
 package cn.benbenedu.sundial.mouse.service;
 
-import cn.benbenedu.sundial.mouse.Mouse;
+import cn.benbenedu.sundial.mouse.model.Mouse;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

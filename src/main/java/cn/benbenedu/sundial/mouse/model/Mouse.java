@@ -1,4 +1,4 @@
-package cn.benbenedu.sundial.mouse;
+package cn.benbenedu.sundial.mouse.model;
 
 import lombok.Data;
 

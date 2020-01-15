@@ -1,6 +1,6 @@
 package cn.benbenedu.sundial.mouse.controller;
 
-import cn.benbenedu.sundial.mouse.Mouse;
+import cn.benbenedu.sundial.mouse.model.Mouse;
 import cn.benbenedu.sundial.mouse.service.MouseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
