@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.benbenedu.sundial</groupId>
         <artifactId>titan</artifactId>
-        <version>0.5</version>
+        <version>0.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>mouse</artifactId>
@@ -19,6 +19,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream</artifactId>
